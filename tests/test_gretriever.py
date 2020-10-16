@@ -1,26 +1,23 @@
-import unittest, getpass
+import unittest, getpass, time
 from GoldenRetriever import GoldenRetriever
 from bs4 import BeautifulSoup
 
 class test_gretriever(unittest.TestCase):
-
+        
     def test_correct_login(self):
-        uname = input("Insert correct username: ")
-        pword = getpass.getpass("Insert correct password: ")
-        with GoldenRetriever(uname, pword) as g:
-            soup = BeautifulSoup(g.login().text, 'html.parser')
-            err = soup.find_all(id='loginerrormessage')
-            self.assertFalse(err)
+        self.uname = input("Username: ")
+        self.pword = getpass.getpass()
+        print("Username: {}\nPassword: {}".format(self.uname, self.pword))
+        with GoldenRetriever() as g:
+            login_result = g.login(self.uname, self.pword)
+            self.assertTrue(login_result)
 
     def test_false_login(self):
         uname = "aaa"
         pword = "aaa"
-        with GoldenRetriever(uname, pword) as g:
-            soup = BeautifulSoup(g.login().text, 'html.parser')
-            err = soup.find_all(id='loginerrormessage')
-            self.assertTrue(err)
+        with GoldenRetriever() as g:
+            login_result = g.login(uname, pword)
+            self.assertTrue(login_result)
 
-    def test_empty_login(self):
-        with GoldenRetriever("", "") as g:
-            err = g.login()
-            self.assertIsNone(err)
+if __name__ == "__main__":
+    unittest.main()
